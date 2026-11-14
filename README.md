@@ -1,32 +1,47 @@
-# Tonkotsu Ramen Noodle Pull — food-picture-01 (v2)
+# Tonkotsu Ramen, Tall Noodle Lift — food-picture-01 (v3)
 
-A steaming bowl of tonkotsu ramen in a dark blue ceramic bowl, shot
-from a slightly high three-quarter angle. Chopsticks come in from the
-top-left and lift a tall, glossy bundle of wavy noodles out of the
-broth while steam curls around the lift. Charred chashu pork is
-fanned on the right, a halved ajitama egg with a molten yolk drips
-at the bottom-left, and menma, scallions, sesame and chili oil finish
-the creamy broth. Warm window light on a dark slate table; the bowl
-fills the frame so the dish reads clearly even at ~300 px across.
+A steaming bowl of tonkotsu ramen in a dark speckled stoneware bowl,
+shot from a slightly high three-quarter angle on a dark wooden table
+with warm restaurant lights melting into bokeh behind it. Wooden
+chopsticks sweep in from the top-right and hold a tall, thick column
+of glossy wavy noodles high above the bowl, broth droplets falling
+and steam curling through the warm light. The broth is creamy ivory
+with bright red chili-oil swirls; charred chashu is fanned on the
+left with caramelized edges, a halved ajitama egg with a molten yolk
+drips at the front-right, and scallions, sesame and a standing nori
+sheet finish the bowl. The bowl fills the frame, so the dish still
+reads clearly at ~300 px across.
+
+## What changed from v2
+
+v2 lifted the noodles from the top-left over a cold dark-blue bowl
+on slate, and the pull came out thin and stringy with the egg half
+cut off at the edge. v3 flips the lift to the top-right, thickens
+the noodle column until it glosses and drips, warms the whole scene
+with restaurant bokeh light, puts the dripping egg front and center
+at the right, and lets the chili-oil swirls give the creamy broth
+its red contrast. Same dish, same bowl family — a warmer, taller,
+cleaner shot.
 
 ## How it was made
 
 The picture was generated for this entry from an original prompt —
 no stock photo, no copied image, no text inside the picture — then
-resized to 1024×1024 and saved as a JPEG at quality 82. The result
-is 154,626 bytes, well under the competition's 1 MiB cap and under
+resized to 1024×1024 and saved as a JPEG at quality 85. The result
+is 187,109 bytes, well under the competition's 1 MiB cap and under
 the 300 KB target for exact win-rate ties.
 
 ## How the program works
 
 `main.py` runs on Python 3.13 with the standard library alone and
 never touches the network. It reads `entry.png`, checks it first
-(JPEG leading bytes, size under the cap, SHA-256 matching the digest
+(JPEG opening bytes, a minimum size, the 1 MiB cap, and the SHA-256
 recorded when the picture was made), writes it to `/output/entry.png`
-(or wherever `MAKEFUN_OUTPUT_DIR` points), then reads the output
-back and checks its size and digest again. Any mismatch stops the
-run with a non-zero exit; on success it prints the output path, byte
-count and digest. Two runs always produce the same bytes.
+(or wherever `MAKEFUN_OUTPUT_DIR` points), then reads the copy back
+and compares it byte for byte with the picture it loaded. Any
+mismatch stops the run with a non-zero exit; on success it prints
+the output path, byte count and digest. Two runs always produce the
+same bytes.
 
 ## Files
 
