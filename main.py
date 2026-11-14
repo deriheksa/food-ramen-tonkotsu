@@ -1,32 +1,29 @@
 #!/usr/bin/env python3
-"""Spicy mala ramen in a wobbling bowl — food-picture-01 entry (v5).
+"""Spicy mala ramen in a white bowl — food-picture-01 entry (v6).
 
-The picture: a dark speckled stoneware bowl tilted slightly, as if
-caught mid-wobble, on a dark wooden restaurant table — and
-everything stays inside the bowl. Noodles, chashu, egg and toppings
-never leave it; the table around the bowl is clean and dry. What
-moves is only the broth: its surface is wavy and sloshing, a thick
-glistening layer of red chili oil swirling in spirals across it,
-deep fiery red mala-style broth with dried red chilies, chili flakes
-and chili seeds floating on top, steam rising. Wooden chopsticks
-lift a tall bundle of wavy noodles coated in red oil. Charred
-chashu is fanned neatly inside the bowl, a halved ajitama egg shows
-its molten yolk, and scallions, sesame and nori finish the scene
-under warm bokeh light. The red dominates, the broth looks alive
-and hot, and the dish still reads clearly at ~300 px across. The
-file is a JPEG (recognised by its opening bytes) that keeps the
-name entry.png.
+The picture in entry.png: a plain white ceramic bowl, sitting
+straight and level on a dark wooden table, full of deep red spicy
+broth whose surface is wavy and sloshing, never flat. Red chili
+oil swirls across it, with dried red chilies, chili flakes and
+chili seeds floating on top and steam curling up. Wooden chopsticks
+come in from the top-right holding a tall glossy bundle of wavy
+noodles coated in red chili oil. Charred chashu is fanned on the
+left, a halved ajitama egg with a molten yolk drips at the
+front-left, and scallions, sesame and a standing nori sheet finish
+the bowl. Warm restaurant lights blur behind it. The file is a
+JPEG — the rules tell PNG and JPEG apart by their first bytes —
+and it keeps the name entry.png.
 
-The program itself does almost nothing, on purpose. It reads the
-picture sitting next to it, proves it is exactly the picture this
-entry recorded — right opening bytes, sensible size, matching
-SHA-256 — and then places a byte-for-byte copy at
-$MAKEFUN_OUTPUT_DIR/entry.png, falling back to /output/entry.png.
-It reads the copy back and compares it with what it loaded, so a
-bad write cannot slip through. Standard library only, no network,
-no randomness: run it twice and the two outputs are identical.
+This program does one narrow thing: it copies that exact picture
+to the folder named by MAKEFUN_OUTPUT_DIR (or /output when the
+variable is absent). It refuses to ship anything else. It checks
+the JPEG opening bytes, the 1 MiB size ceiling and the SHA-256
+of the file before writing, then reads the written copy back and
+compares it byte for byte. Only the standard library is used,
+nothing is fetched, nothing is random — two runs give the same
+bytes twice.
 
-Quick local run:
+Try it locally:
     mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py
 """
 
@@ -35,59 +32,68 @@ import os
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
-SOURCE = ROOT / "entry.png"
-OUT_ENV = "MAKEFUN_OUTPUT_DIR"
-OUT_DEFAULT = "/output"
-CAP = 1_048_576  # competition ceiling: 1 MiB
-FLOOR = 1_024  # anything smaller cannot be this picture
-JPEG_HEAD = b"\xff\xd8\xff"  # the three bytes every JPEG opens with
-# SHA-256 of entry.png, taken when the picture was finished.
-RECORDED_HASH = (
-    "400644604bd17706e7215072480df03c74d4329c883bc69ad38b67deaff345c2"
+HERE = Path(__file__).resolve().parent
+PICTURE = HERE / "entry.png"
+OUTPUT_ENV = "MAKEFUN_OUTPUT_DIR"
+FALLBACK_DIR = "/output"
+MAX_BYTES = 1_048_576  # competition ceiling: 1 MiB
+JPEG_MAGIC = b"\xff\xd8\xff"  # the three bytes that open every JPEG
+# SHA-256 of entry.png, recorded when the picture was finished.
+# Any file with a different digest is not this entry's picture.
+EXPECTED_DIGEST = (
+    "057798702def698016596c030a05c4ee7bfe493206353b18e950b657c50bedf2"
 )
 
 
-def abort(msg: str) -> SystemExit:
-    """Fail loudly with the reason attached."""
-    return SystemExit(f"entry check failed: {msg}")
+def fail(reason: str) -> "SystemExit":
+    """The exit this program takes when a check does not pass."""
+    return SystemExit(f"picture check failed: {reason}")
 
 
-def read_picture() -> bytes:
-    """Load entry.png only once it has proven itself genuine."""
+def load_picture() -> bytes:
+    """Read entry.png, but only once it has proven to be the picture.
+
+    An unreadable file, an empty file, a non-JPEG, a file over the
+    size ceiling, or a digest that is not EXPECTED_DIGEST all stop
+    the run right here, before anything is written out.
+    """
     try:
-        blob = SOURCE.read_bytes()
-    except OSError as err:
-        raise abort(f"cannot read {SOURCE} ({err})")
-    if len(blob) < FLOOR:
-        raise abort(f"entry.png is {len(blob)} bytes — far too small")
-    if blob[:3] != JPEG_HEAD:
-        raise abort("entry.png does not open with JPEG bytes")
-    if len(blob) > CAP:
-        raise abort(f"entry.png is {len(blob)} bytes, past the 1 MiB cap")
-    if hashlib.sha256(blob).hexdigest() != RECORDED_HASH:
-        raise abort("entry.png digest differs from the recorded picture")
-    return blob
+        data = PICTURE.read_bytes()
+    except OSError as exc:
+        raise fail(f"cannot read {PICTURE} ({exc})")
+    if not data:
+        raise fail("entry.png is empty")
+    if data[:3] != JPEG_MAGIC:
+        raise fail("entry.png does not start with JPEG bytes")
+    if len(data) > MAX_BYTES:
+        raise fail(f"entry.png is {len(data)} bytes, over the {MAX_BYTES} cap")
+    if hashlib.sha256(data).hexdigest() != EXPECTED_DIGEST:
+        raise fail("entry.png digest does not match the recorded picture")
+    return data
 
 
-def place(blob: bytes) -> Path:
-    """Copy the picture out, then prove the copy matches byte for byte."""
-    folder = Path(os.environ.get(OUT_ENV) or OUT_DEFAULT)
-    folder.mkdir(parents=True, exist_ok=True)
-    dest = folder / "entry.png"
-    dest.write_bytes(blob)
-    if dest.read_bytes() != blob:
-        raise abort("the copy on disk is not identical to the picture")
-    return dest
+def place_picture(data: bytes) -> Path:
+    """Write the picture into the output folder and prove it landed.
+
+    The copy is read back and compared with what was loaded, so a
+    short or garbled write is caught instead of shipped.
+    """
+    target_dir = Path(os.environ.get(OUTPUT_ENV) or FALLBACK_DIR)
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = target_dir / "entry.png"
+    target.write_bytes(data)
+    if target.read_bytes() != data:
+        raise fail("the written copy is not identical to the picture")
+    return target
 
 
-def run() -> int:
-    """Check the picture, ship it, say where it landed."""
-    blob = read_picture()
-    dest = place(blob)
-    print(f"wrote {dest} ({len(blob)} bytes, sha256 {RECORDED_HASH[:12]}...)")
+def main() -> int:
+    """Check the picture, copy it out, and report where it went."""
+    data = load_picture()
+    target = place_picture(data)
+    print(f"wrote {target} ({len(data)} bytes, sha256 {EXPECTED_DIGEST[:12]}...)")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(run())
+    sys.exit(main())
