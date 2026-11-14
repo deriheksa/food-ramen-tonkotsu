@@ -1,32 +1,32 @@
-# Tonkotsu Ramen, Close Up — food-picture-01
+# Tonkotsu Ramen Noodle Pull — food-picture-01 (v2)
 
-A single food photograph, taken tight on the bowl: tonkotsu ramen
-served in a deep red ceramic bowl. Chopsticks are lifting glossy
-noodles from a creamy broth while steam rises; beside them sit a
-halved soft egg with a golden jammy yolk, slices of chashu pork,
-scallions and nori. Warm light on a dark wooden table, the bowl
-filling the frame so the dish reads clearly even when the picture is
-shown small.
+A steaming bowl of tonkotsu ramen in a dark blue ceramic bowl, shot
+from a slightly high three-quarter angle. Chopsticks come in from the
+top-left and lift a tall, glossy bundle of wavy noodles out of the
+broth while steam curls around the lift. Charred chashu pork is
+fanned on the right, a halved ajitama egg with a molten yolk drips
+at the bottom-left, and menma, scallions, sesame and chili oil finish
+the creamy broth. Warm window light on a dark slate table; the bowl
+fills the frame so the dish reads clearly even at ~300 px across.
 
 ## How it was made
 
-The picture was created from an original prompt written for this
-entry — no stock photo, no text inside the image — then downscaled to
-1024×1024 and saved as a JPEG at quality 92. The result is 262,633
-bytes, comfortably under the competition's 1 MiB file-size cap.
+The picture was generated for this entry from an original prompt —
+no stock photo, no copied image, no text inside the picture — then
+resized to 1024×1024 and saved as a JPEG at quality 82. The result
+is 154,626 bytes, well under the competition's 1 MiB cap and under
+the 300 KB target for exact win-rate ties.
 
 ## How the program works
 
 `main.py` runs on Python 3.13 with the standard library alone and
-never touches the network. It copies `entry.png` to
-`/output/entry.png` (or wherever `MAKEFUN_OUTPUT_DIR` points) in
-64 KiB chunks, hashing each chunk as it goes, and afterwards checks
-the copy against the original: same byte count and same SHA-256
-digest. Before copying it also confirms the file really is a JPEG by
-its leading bytes and that it fits under the 1 MiB cap. Any failure
-prints an error and exits non-zero; on success it prints the output
-path, byte count and digest. Running it twice always produces the
-same bytes.
+never touches the network. It reads `entry.png`, checks it first
+(JPEG leading bytes, size under the cap, SHA-256 matching the digest
+recorded when the picture was made), writes it to `/output/entry.png`
+(or wherever `MAKEFUN_OUTPUT_DIR` points), then reads the output
+back and checks its size and digest again. Any mismatch stops the
+run with a non-zero exit; on success it prints the output path, byte
+count and digest. Two runs always produce the same bytes.
 
 ## Files
 

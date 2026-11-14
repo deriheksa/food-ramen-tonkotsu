@@ -1,118 +1,95 @@
 #!/usr/bin/env python3
-"""Tonkotsu ramen, close up — make.fun food-picture-01 entry.
+"""Noodle-pull tonkotsu ramen — food-picture-01 entry (v2).
 
-The picture: a close-up photograph of a bowl of tonkotsu ramen in a
-deep red ceramic bowl. Chopsticks lift glossy noodles out of a creamy
-broth, steam curling upward; a halved soft egg with a golden jammy
-yolk, slices of chashu pork, scallions and a sheet of nori finish the
-bowl. The artwork lives in entry.png beside this file. Its bytes are
-JPEG (the rules allow a PNG or a JPEG, told apart by the leading
-bytes), and the filename stays entry.png.
+The picture in entry.png: a steaming bowl of tonkotsu ramen in a dark
+blue ceramic bowl, photographed from a slightly high three-quarter
+angle. Wooden chopsticks come in from the top-left corner and lift a
+tall, glossy bundle of wavy noodles; steam curls around the lift.
+Charred chashu pork is fanned on the right side of the bowl, a halved
+ajitama egg with a molten yolk drips at the bottom-left, and menma,
+scallions and chili oil finish the creamy broth. Warm window light on
+a dark slate table. The file is a JPEG (the rules accept PNG or JPEG,
+told apart by the first bytes) and keeps the name entry.png.
 
-What this program does: it streams that artwork to
-$MAKEFUN_OUTPUT_DIR/entry.png (default /output) and then proves the
-copy is byte-for-byte identical, so a truncated or corrupted output
-can never reach the judge. Python 3.13, standard library only, no
-network access, fully deterministic — the same input bytes always
-produce the same output file.
+This program does one thing: it puts that picture at
+$MAKEFUN_OUTPUT_DIR/entry.png (or /output when the variable is
+unset), and it refuses to hand over a damaged copy. It checks the
+picture before writing — JPEG header, size under the 1 MiB cap, and
+the exact SHA-256 I recorded when the picture was made — then checks
+the written file again the same way. Standard library only, no
+network, no randomness: the same input always produces the same
+output bytes.
 
-Local try-out:
+Try it locally:
     mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py
 """
-
-from __future__ import annotations
 
 import hashlib
 import os
 import sys
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
-SOURCE = HERE / "entry.png"
-
-OUTPUT_ENV_VAR = "MAKEFUN_OUTPUT_DIR"
-DEFAULT_OUTPUT_DIR = "/output"
-
-MAX_BYTES = 1 << 20  # 1 MiB, the competition's file-size cap
-JPEG_SIGNATURE = b"\xff\xd8\xff"  # first three bytes of any JPEG
-CHUNK_SIZE = 1 << 16  # 64 KiB per read/write step
-
-
-class ArtworkError(Exception):
-    """The artwork cannot be delivered intact."""
+PICTURE = Path(__file__).resolve().parent / "entry.png"
+ENV_DIR = "MAKEFUN_OUTPUT_DIR"
+FALLBACK_DIR = "/output"
+SIZE_CAP = 1048576  # 1 MiB, the competition's cap
+JPEG_HEAD = b"\xff\xd8\xff"  # every JPEG starts with these three bytes
+# SHA-256 of entry.png as saved for this entry; the program will not
+# ship a picture whose digest differs from this.
+EXPECTED_DIGEST = (
+    "45ff894c87339fea2f1bbd61b564aa146f2c734d234bd8f8b040f3f2b914e413"
+)
 
 
-def destination_path() -> Path:
-    """Where the copy goes: $MAKEFUN_OUTPUT_DIR/entry.png."""
-    directory = Path(os.environ.get(OUTPUT_ENV_VAR, DEFAULT_OUTPUT_DIR))
-    return directory / SOURCE.name
+def load_picture() -> bytes:
+    """Read entry.png and prove it is the picture this entry ships.
 
-
-def inspect_source() -> int:
-    """Check the artwork before copying; return its size in bytes.
-
-    Rejects anything that is not a JPEG and anything over the cap, so
-    a bad input fails fast instead of producing a bad output.
+    Fails loudly on a missing file, a non-JPEG header, a file over
+    the cap, or a digest that does not match EXPECTED_DIGEST.
     """
-    size = SOURCE.stat().st_size
-    with SOURCE.open("rb") as handle:
-        if handle.read(len(JPEG_SIGNATURE)) != JPEG_SIGNATURE:
-            raise ArtworkError("entry.png is not a JPEG (bad magic bytes)")
-    if size > MAX_BYTES:
-        raise ArtworkError(
-            f"entry.png is {size} bytes, over the {MAX_BYTES}-byte limit"
-        )
-    return size
-
-
-def copy_with_digest(destination: Path) -> tuple[str, int]:
-    """Stream SOURCE to destination, hashing every chunk on the way.
-
-    Returns the hex digest of exactly the bytes written, plus the
-    number of bytes written.
-    """
-    digest = hashlib.sha256()
-    total = 0
-    with SOURCE.open("rb") as reader, destination.open("wb") as writer:
-        while chunk := reader.read(CHUNK_SIZE):
-            digest.update(chunk)
-            writer.write(chunk)
-            total += len(chunk)
-    return digest.hexdigest(), total
-
-
-def verify_copy(destination: Path, expected_size: int, digest: str) -> None:
-    """Confirm the copy on disk matches the artwork byte for byte."""
-    if not destination.is_file():
-        raise ArtworkError("output file did not appear after copying")
-    actual_size = destination.stat().st_size
-    if actual_size != expected_size:
-        raise ArtworkError(
-            f"output is {actual_size} bytes, "
-            f"expected {expected_size} — copy stopped early"
-        )
-    reference = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
-    if digest != reference:
-        raise ArtworkError("output hash differs from entry.png — copy is corrupt")
-
-
-def run() -> int:
-    """Deliver the artwork and verify it; 0 on success, 1 on failure."""
-    destination = destination_path()
-    destination.parent.mkdir(parents=True, exist_ok=True)
     try:
-        size = inspect_source()
-        digest, copied = copy_with_digest(destination)
-        verify_copy(destination, size, digest)
-    except ArtworkError as problem:
-        print(f"error: {problem}", file=sys.stderr)
-        return 1
-    print(
-        f"wrote {destination} "
-        f"({copied} bytes, sha256 {digest[:12]}...)"
-    )
+        data = PICTURE.read_bytes()
+    except OSError as err:
+        raise SystemExit(f"cannot read {PICTURE}: {err}")
+    if data[:3] != JPEG_HEAD:
+        raise SystemExit("entry.png is not a JPEG (bad leading bytes)")
+    if len(data) > SIZE_CAP:
+        raise SystemExit(
+            f"entry.png is {len(data)} bytes, over the {SIZE_CAP}-byte cap"
+        )
+    if hashlib.sha256(data).hexdigest() != EXPECTED_DIGEST:
+        raise SystemExit("entry.png digest mismatch — picture is not the one recorded")
+    return data
+
+
+def place_picture(data: bytes) -> Path:
+    """Write the picture to the output directory and prove it landed.
+
+    Returns the output path. The written file is read back and its
+    digest compared with the input, so a short or garbled write is
+    caught here instead of reaching the judge.
+    """
+    out_dir = Path(os.environ.get(ENV_DIR, FALLBACK_DIR))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    target = out_dir / "entry.png"
+    target.write_bytes(data)
+    written = target.read_bytes()
+    if len(written) != len(data):
+        raise SystemExit(
+            f"output is {len(written)} bytes, expected {len(data)} — write stopped early"
+        )
+    if hashlib.sha256(written).hexdigest() != EXPECTED_DIGEST:
+        raise SystemExit("output digest mismatch — copy did not land intact")
+    return target
+
+
+def main() -> int:
+    """Ship the picture; print where it went and how big it is."""
+    data = load_picture()
+    target = place_picture(data)
+    print(f"wrote {target} ({len(data)} bytes, sha256 {EXPECTED_DIGEST[:12]}...)")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(run())
+    sys.exit(main())
