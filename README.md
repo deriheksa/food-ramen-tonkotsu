@@ -1,34 +1,34 @@
-# Tonkotsu Ramen, Tall Noodle Lift — food-picture-01 (v3)
+# Tonkotsu Ramen, Tipped Bowl — food-picture-01 (v4)
 
-A steaming bowl of tonkotsu ramen in a dark speckled stoneware bowl,
-shot from a slightly high three-quarter angle on a dark wooden table
-with warm restaurant lights melting into bokeh behind it. Wooden
-chopsticks sweep in from the top-right and hold a tall, thick column
-of glossy wavy noodles high above the bowl, broth droplets falling
-and steam curling through the warm light. The broth is creamy ivory
-with bright red chili-oil swirls; charred chashu is fanned on the
-left with caramelized edges, a halved ajitama egg with a molten yolk
-drips at the front-right, and scallions, sesame and a standing nori
-sheet finish the bowl. The bowl fills the frame, so the dish still
-reads clearly at ~300 px across.
+A dark speckled stoneware bowl tipped on its side on a dark wooden
+table, its tonkotsu pouring out in one tidy cascade. Glossy wavy
+noodles flow out in a single clean ribbon, guided by wooden
+chopsticks. The broth is thick and creamy, pale yellow like opor
+coconut-milk broth, with bold bright-red chili-oil swirls and chili
+flakes over it — creamy at first sight, fiercely spicy at second.
+Charred chashu is fanned neatly beside the spill, a halved ajitama
+egg with a molten yolk drips into the broth, and scallions, sesame
+and steam finish the scene under warm restaurant light. The bowl
+stays recognisable and the dish reads clearly at ~300 px across.
 
-## What changed from v2
+## What changed from v3
 
-v2 lifted the noodles from the top-left over a cold dark-blue bowl
-on slate, and the pull came out thin and stringy with the egg half
-cut off at the edge. v3 flips the lift to the top-right, thickens
-the noodle column until it glosses and drips, warms the whole scene
-with restaurant bokeh light, puts the dripping egg front and center
-at the right, and lets the chili-oil swirls give the creamy broth
-its red contrast. Same dish, same bowl family — a warmer, taller,
-cleaner shot.
+v3 was a tall noodle lift held high above an upright bowl. v4
+takes a different idea: tip the bowl over and let the contents
+spill — but keep the spill deliberate. One ribbon of noodles, one
+tidy pool of broth, toppings placed on purpose. The broth also
+changes character: v3's creamy ivory broth becomes a pale-yellow,
+opor-style coconut-milk cream, and the chili oil gets bolder, with
+flakes scattered over the pale broth for a hard red-on-yellow
+contrast. Same dish, same bowl family — a new angle and a spicier
+first impression.
 
 ## How it was made
 
 The picture was generated for this entry from an original prompt —
 no stock photo, no copied image, no text inside the picture — then
 resized to 1024×1024 and saved as a JPEG at quality 85. The result
-is 187,109 bytes, well under the competition's 1 MiB cap and under
+is 178,350 bytes, well under the competition's 1 MiB cap and under
 the 300 KB target for exact win-rate ties.
 
 ## How the program works
