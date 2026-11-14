@@ -1,34 +1,35 @@
-# Tonkotsu Ramen, Tipped Bowl — food-picture-01 (v4)
+# Spicy Mala Ramen, Wobbling Bowl — food-picture-01 (v5)
 
-A dark speckled stoneware bowl tipped on its side on a dark wooden
-table, its tonkotsu pouring out in one tidy cascade. Glossy wavy
-noodles flow out in a single clean ribbon, guided by wooden
-chopsticks. The broth is thick and creamy, pale yellow like opor
-coconut-milk broth, with bold bright-red chili-oil swirls and chili
-flakes over it — creamy at first sight, fiercely spicy at second.
-Charred chashu is fanned neatly beside the spill, a halved ajitama
-egg with a molten yolk drips into the broth, and scallions, sesame
-and steam finish the scene under warm restaurant light. The bowl
-stays recognisable and the dish reads clearly at ~300 px across.
+A dark speckled stoneware bowl tilted slightly, as if caught
+mid-wobble, on a dark wooden restaurant table. Everything stays
+inside the bowl — noodles, chashu, egg and toppings never leave it,
+and the table around the bowl is clean and dry. What moves is only
+the broth: its surface is wavy and sloshing, a thick glistening
+layer of red chili oil swirling in spirals across it. Deep fiery
+red mala-style broth, dried red chilies, chili flakes and chili
+seeds floating on top, steam rising. Wooden chopsticks lift a tall
+bundle of wavy noodles coated in red oil. Charred chashu is fanned
+neatly inside the bowl, a halved ajitama egg shows its molten yolk,
+and scallions, sesame and nori finish the scene under warm bokeh
+light. The red dominates; the broth looks alive and hot; the dish
+reads clearly at ~300 px across.
 
-## What changed from v3
+## What changed from v4
 
-v3 was a tall noodle lift held high above an upright bowl. v4
-takes a different idea: tip the bowl over and let the contents
-spill — but keep the spill deliberate. One ribbon of noodles, one
-tidy pool of broth, toppings placed on purpose. The broth also
-changes character: v3's creamy ivory broth becomes a pale-yellow,
-opor-style coconut-milk cream, and the chili oil gets bolder, with
-flakes scattered over the pale broth for a hard red-on-yellow
-contrast. Same dish, same bowl family — a new angle and a spicier
-first impression.
+v4 tipped the bowl over and let pale opor-style broth pool on the
+table — the user rejected it: the broth looked creamy, not spicy,
+and the tipped bowl read as a mess. v5 corrects both: the bowl only
+leans, nothing leaves it, and the broth is deep red and fiery
+instead of pale and creamy. The wobble lives in the broth surface
+— waves and a chili-oil swirl — not in a spill. Same dish, same
+bowl family, a hotter first impression.
 
 ## How it was made
 
 The picture was generated for this entry from an original prompt —
 no stock photo, no copied image, no text inside the picture — then
-resized to 1024×1024 and saved as a JPEG at quality 85. The result
-is 178,350 bytes, well under the competition's 1 MiB cap and under
+resized to 1024×1024 and saved as a JPEG at quality 82. The result
+is 191,961 bytes, well under the competition's 1 MiB cap and under
 the 300 KB target for exact win-rate ties.
 
 ## How the program works
